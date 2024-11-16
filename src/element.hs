@@ -10,6 +10,19 @@ type Element = Char
 allElems :: [Element]
 allElems = ['a'..'z'] ++ ['A'..'Z']
 
+-- Entferne Duplikate einer Liste.
+nub :: [Element] -> [Element]
+nub []     = []
+nub (e:es) = e : (nub $ filter (/= e) es)
+
+-- Lasse nur Duplikate einer Liste bleiben.
+dup :: [Element] -> [Element]
+dup [] = []
+dup (e:es) =
+    if e `elem` es
+    then e : (dup es)
+    else dup es
+
 -- Formatiere Elemente, um sie auszudrucken.
 formatElems :: [Element] -> String
 formatElems []     = ""

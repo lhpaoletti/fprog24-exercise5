@@ -29,7 +29,6 @@ instance Menge MT3 where
     sindGleich m1 m2@(MT3 f) =
         let elems1 = mt3Elems m1
             elems2 = mt3Elems m2
-        -- beide gleich wenn beide Teilmengen voneinander
         in istTeilmenge m1 m2
            && istTeilmenge m2 m1
 
