@@ -1,1 +1,5 @@
 *.pdf
+
+01_uebung_5*
+!*.hs
+!*.lhs
