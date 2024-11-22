@@ -204,7 +204,7 @@ instance Menge MT3 where
     allMenge   = MT3 (\_ -> True )
 
     -- istMenge muss nicht ueberschrieben werden, weil es nicht
-    --  moeglich ist, dass ein MT3 nicht eine Menge ist
+    --  moeglich ist, dass ein MT3 nicht eine Menge sei
 
     vereinige (MT3 f1) (MT3 f2) = MT3 $
         \elem -> f1 elem || f2 elem
@@ -251,7 +251,7 @@ main = do
     putStrLn ""
     putStrLn $ "vereinige    {} {'a'}: " ++ (zeige . vereinige leereMenge $ MT1 "a")
     putStrLn $ "vereinige {'a'} {'a'}: " ++ (zeige $ vereinige (MT1 "a") (MT1 "a"))
-    putStrLn $ "vereinige {'a'} {'b'}: " ++ (zeige $ vereinige (MT1 "b") (MT1 "a"))
+    putStrLn $ "vereinige {'a'} {'b'}: " ++ (zeige $ vereinige (MT1 "a") (MT1 "b"))
     putStrLn ""
     putStrLn $ "schneide         {} {'a'}: " ++ (zeige . schneide leereMenge $ MT1 "a")
     putStrLn $ "schneide      {'a'} {'a'}: " ++ (zeige $ schneide (MT1 "a") (MT1 "a"))
@@ -276,3 +276,86 @@ main = do
     putStrLn $ "istObermenge {'a', 'b'} {'b', 'a'}: " ++ (show $ istObermenge (MT1 "ab") (MT1 "ba"))
     putStrLn $ "istObermenge      {'a'} {'a', 'b'}: " ++ (show $ istObermenge (MT1  "a") (MT1 "ab"))
     putStrLn $ "istObermenge      {'a', 'b'} {'a'}: " ++ (show $ istObermenge (MT1 "ab") (MT1  "a"))
+    putStrLn ""
+    putStrLn ""
+    putStrLn $ "---------------------------MT2----------------------------"
+    let a2  = VerlaengereUm 'a' Nichts
+        b2  = VerlaengereUm 'b' Nichts
+        aa2 = VerlaengereUm 'a' $ VerlaengereUm 'a' Nichts
+        ab2 = VerlaengereUm 'a' $ VerlaengereUm 'b' Nichts
+        ba2 = VerlaengereUm 'b' $ VerlaengereUm 'a' Nichts
+
+    putStrLn $ "leereMenge: " ++ zeige (leereMenge :: MT2)
+    putStrLn $ "allMenge  : " ++ zeige (allMenge   :: MT2)
+    putStrLn ""
+    putStrLn $ "istMenge         {}: " ++ (show $ istMenge (leereMenge :: MT2))
+    putStrLn $ "istMenge {'a', 'a'}: " ++ (show $ istMenge aa2)
+    putStrLn $ "istMenge {'a', 'b'}: " ++ (show $ istMenge ab2)
+    putStrLn ""
+    putStrLn $ "vereinige    {} {'a'}: " ++ (zeige . vereinige leereMenge $ a2)
+    putStrLn $ "vereinige {'a'} {'a'}: " ++ (zeige $ vereinige a2 a2)
+    putStrLn $ "vereinige {'a'} {'b'}: " ++ (zeige $ vereinige a2 b2)
+    putStrLn ""
+    putStrLn $ "schneide         {} {'a'}: " ++ (zeige . schneide leereMenge $ a2)
+    putStrLn $ "schneide      {'a'} {'a'}: " ++ (zeige $ schneide a2  a2)
+    putStrLn $ "schneide {'a'} {'a', 'b'}: " ++ (zeige $ schneide a2 ab2)
+    putStrLn ""
+    putStrLn $ "zieheab         {} {'a'}: " ++ (zeige . zieheab leereMenge $ a2)
+    putStrLn $ "zieheab      {'a'} {'a'}: " ++ (zeige $ zieheab  a2 a2)
+    putStrLn $ "zieheab {'a', 'b'} {'a'}: " ++ (zeige $ zieheab ab2 a2)
+    putStrLn ""
+    putStrLn $ "komplementiere . zieheab allMenge $ {'a'}: " ++ (zeige . komplementiere . zieheab allMenge $ a2)
+    putStrLn ""
+    putStrLn $ "sindGleich           {'a'} {'a'}: " ++ (show $ sindGleich  a2  a2)
+    putStrLn $ "sindGleich           {'a'} {'b'}: " ++ (show $ sindGleich  a2  b2)
+    putStrLn $ "sindGleich {'a', 'b'} {'b', 'a'}: " ++ (show $ sindGleich ab2 ba2)
+    putStrLn ""
+    putStrLn $ "istTeilmenge           {'a'} {'a'}: " ++ (show $ istTeilmenge  a2  a2)
+    putStrLn $ "istTeilmenge {'a', 'b'} {'b', 'a'}: " ++ (show $ istTeilmenge ab2 ba2)
+    putStrLn $ "istTeilmenge      {'a'} {'a', 'b'}: " ++ (show $ istTeilmenge  a2 ab2)
+    putStrLn $ "istTeilmenge      {'a', 'b'} {'a'}: " ++ (show $ istTeilmenge ab2  a2)
+    putStrLn ""
+    putStrLn $ "istObermenge           {'a'} {'a'}: " ++ (show $ istObermenge  a2  a2)
+    putStrLn $ "istObermenge {'a', 'b'} {'b', 'a'}: " ++ (show $ istObermenge ab2 ba2)
+    putStrLn $ "istObermenge      {'a'} {'a', 'b'}: " ++ (show $ istObermenge  a2 ab2)
+    putStrLn $ "istObermenge      {'a', 'b'} {'a'}: " ++ (show $ istObermenge ab2  a2)
+    putStrLn ""
+    putStrLn ""
+    putStrLn $ "---------------------------MT3----------------------------"
+    let a3  = \e -> if e == 'a'             then True else False
+        b3  = \e -> if e == 'b'             then True else False
+        ab3 = \e -> if e == 'a' || e == 'b' then True else False
+        ba3 = \e -> if e == 'b' || e == 'a' then True else False
+
+    putStrLn $ "leereMenge: " ++ zeige (leereMenge :: MT3)
+    putStrLn $ "allMenge  : " ++ zeige (allMenge   :: MT3)
+    putStrLn ""
+    putStrLn "istMenge ist die Protoimplementierung"
+    putStrLn ""
+    putStrLn $ "vereinige    {} {'a'}: " ++ (zeige . vereinige leereMenge $ MT3 a3)
+    putStrLn $ "vereinige {'a'} {'a'}: " ++ (zeige $ vereinige (MT3 a3) (MT3 a3))
+    putStrLn $ "vereinige {'a'} {'b'}: " ++ (zeige $ vereinige (MT3 a3) (MT3 b3))
+    putStrLn ""
+    putStrLn $ "schneide         {} {'a'}: " ++ (zeige . schneide leereMenge $ MT3 a3)
+    putStrLn $ "schneide      {'a'} {'a'}: " ++ (zeige $ schneide (MT3 a3) (MT3  a3))
+    putStrLn $ "schneide {'a'} {'a', 'b'}: " ++ (zeige $ schneide (MT3 a3) (MT3 ab3))
+    putStrLn ""
+    putStrLn $ "zieheab         {} {'a'}: " ++ (zeige . zieheab leereMenge $ MT3 a3)
+    putStrLn $ "zieheab      {'a'} {'a'}: " ++ (zeige $ zieheab (MT3  a3) (MT3 a3))
+    putStrLn $ "zieheab {'a', 'b'} {'a'}: " ++ (zeige $ zieheab (MT3 ab3) (MT3 a3))
+    putStrLn ""
+    putStrLn $ "komplementiere . zieheab allMenge $ {'a'}: " ++ (zeige . komplementiere . zieheab allMenge $ MT3 a3)
+    putStrLn ""
+    putStrLn $ "sindGleich           {'a'} {'a'}: " ++ (show $ sindGleich (MT3  a3) (MT3  a3))
+    putStrLn $ "sindGleich           {'a'} {'b'}: " ++ (show $ sindGleich (MT3  a3) (MT3  b3))
+    putStrLn $ "sindGleich {'a', 'b'} {'b', 'a'}: " ++ (show $ sindGleich (MT3 ab3) (MT3 ba3))
+    putStrLn ""
+    putStrLn $ "istTeilmenge           {'a'} {'a'}: " ++ (show $ istTeilmenge (MT3  a3) (MT3  a3))
+    putStrLn $ "istTeilmenge {'a', 'b'} {'b', 'a'}: " ++ (show $ istTeilmenge (MT3 ab3) (MT3 ba3))
+    putStrLn $ "istTeilmenge      {'a'} {'a', 'b'}: " ++ (show $ istTeilmenge (MT3  a3) (MT3 ab3))
+    putStrLn $ "istTeilmenge      {'a', 'b'} {'a'}: " ++ (show $ istTeilmenge (MT3 ab3) (MT3  a3))
+    putStrLn ""
+    putStrLn $ "istObermenge           {'a'} {'a'}: " ++ (show $ istObermenge (MT3  a3) (MT3  a3))
+    putStrLn $ "istObermenge {'a', 'b'} {'b', 'a'}: " ++ (show $ istObermenge (MT3 ab3) (MT3 ba3))
+    putStrLn $ "istObermenge      {'a'} {'a', 'b'}: " ++ (show $ istObermenge (MT3  a3) (MT3 ab3))
+    putStrLn $ "istObermenge      {'a', 'b'} {'a'}: " ++ (show $ istObermenge (MT3 ab3) (MT3  a3))
