@@ -62,16 +62,19 @@ Formatiere Elemente, um sie auszudrucken.
 >     vereinige m1@(MT1 elems1) m2@(MT1 elems2) =
 >         if not (istMenge m1 && istMenge m2)
 >         then error "Argument muss Menge sein (keine Duplikate)"
+>         -- Fuege beide Mengen zusammen, dann nimm Duplikate weg
 >         else MT1 $ nub $ elems1 ++ elems2
 >
 >     schneide m1@(MT1 elems1) m2@(MT1 elems2) =
 >         if not (istMenge m1 && istMenge m2)
 >         then error "Argument muss Menge sein (keine Duplikate)"
+>         -- Fuege beide Mengen zusammen, dann lass nur Duplikate drin
 >         else MT1 $ dup $ elems1 ++ elems2
 >
 >     zieheab m1@(MT1 elems1) m2@(MT1 elems2) =
 >         if not (istMenge m1 && istMenge m2)
 >         then error "Argument muss Menge sein (keine Duplikate)"
+>         -- Nimm nur Elemente der ersten Menge, die nicht in der Zweiten vorkommen
 >         else MT1 $ [e | e <- elems1, e `notElem` elems2]
 >
 >     komplementiere = zieheab allMenge
@@ -104,24 +107,25 @@ Formatiere Elemente, um sie auszudrucken.
 >         (not . isElem e) m && istMenge m
 >
 >     vereinige Nichts Nichts = Nichts
+>     vereinige Nichts m = vereinige m Nichts
 >     vereinige m Nichts =
 >         if not $ istMenge m
 >         then error "Argument muss Menge sein (keine Duplikate)"
 >         else m
->     vereinige Nichts m = vereinige m Nichts
 >     vereinige m1 m2@(VerlaengereUm e m2') =
 >         if not (istMenge m1 && istMenge m2)
 >         then error "Argument muss Menge sein (keine Duplikate)"
->         else if (not . isElem e) m1
+>         else if not . isElem e $ m1
+>              -- Akumuliere neue einzigartige Elemente der zweiten Menge in der Ersten
 >              then vereinige (VerlaengereUm e m1) m2'
 >              else vereinige m1 m2'
 >
 >     schneide Nichts Nichts = Nichts
+>     schneide m Nichts = schneide Nichts m
 >     schneide Nichts m =
 >         if not $ istMenge m
 >         then error "Argument muss Menge sein (keine Duplikate)"
 >         else Nichts
->     schneide m Nichts = schneide Nichts m
 >     schneide m1 m2 =
 >         if not (istMenge m1 && istMenge m2)
 >         then error "Argument muss Menge sein (keine Duplikate)"
@@ -140,6 +144,7 @@ Formatiere Elemente, um sie auszudrucken.
 >         if not (istMenge m1 && istMenge m2)
 >         then error "Argument muss Menge sein (keine Duplikate)"
 >         else if isElem e m1
+>              -- Nimm von der ersten Menge Elemente weg, die bei der Zweiten auch sind
 >              then zieheab (removeElem e m1) m2'
 >              else zieheab m1 m2'
 >
@@ -160,6 +165,7 @@ Formatiere Elemente, um sie auszudrucken.
 >     istTeilmenge m1@(VerlaengereUm e m1') m2 =
 >         if not (istMenge m1 && istMenge m2)
 >         then error "Argument muss Menge sein (keine Duplikate)"
+>         -- Die erste Menge ist Teilmenge, wenn jedes ihrer Elemente in der Zweiten auch ist
 >         else if isElem e m2
 >              then istTeilmenge m1' m2
 >              else False
@@ -195,6 +201,7 @@ Man sollte den Akumulator mit `Nichts` starten.
 > intersectMt2 acc Nichts _ = acc
 > intersectMt2 acc _ Nichts = acc
 > intersectMt2 acc m1 (VerlaengereUm e m') =
+>     -- Elemente der zweiten Menge werden akumuliert, wenn sie auch in der Ersten sind
 >     if isElem e m1
 >     then intersectMt2 (VerlaengereUm e acc) m1 m'
 >     else intersectMt2 acc m1 m'
